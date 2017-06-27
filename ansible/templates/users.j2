@@ -1,0 +1,14 @@
+system {
+    login {
+{% for user in users %}
+    user {{user.name}} {
+        full-name "{{user.full_name}}";
+        uid {{user.uid}};
+        class {{user.class}};
+        authentication {
+            encrypted-password "{{user.password}}"; ## SECRET-DATA
+        }
+    }
+{% endfor %}
+    }
+}

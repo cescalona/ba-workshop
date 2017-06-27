@@ -1,0 +1,29 @@
+---
+users:
+  - 
+    name: paul
+    full_name: Paul Plav
+    password: $1$y2.2Yxkj$kQlZ3psTRIrG37h5ryB5H.
+    class: super-user
+    uid:  2001
+  -
+    name: john
+    full_name: John Smith
+    password: $1$y2.2Yxkj$kQlZ3psTRIrG37h5ryB5H.
+    class: read-only
+    uid:  2002
+  - 
+    name: elmer
+    full_name: Elmer Fudd
+    password: $1$y2.2Yxkj$kQlZ3psTRIrG37h5ryB5H.
+    class: operator
+    uid:  2003
+
+    # user john {
+    #     full-name "John Smith";
+    #     uid 2002;
+    #     class read-only;
+    #     authentication {
+    #         encrypted-password "$1$y2.2Yxkj$kQlZ3psTRIrG37h5ryB5H."; ## SECRET-DATA
+    #     }
+    # }

@@ -1,0 +1,80 @@
+--- 
+- 
+  connection: local
+  gather_facts: false
+  hosts: all
+  roles:
+  - Juniper.junos
+
+  tasks:
+
+    - 
+      template: "src='templates/users.j2' dest='files/{{inventory_hostname}}_users.conf'"
+
+    - 
+      junos_jsnapy: 
+        action: snap_pre
+        host: "{{ inventory_hostname }}"
+        passwd: "{{ credentials.password }}"
+        test_files: ../jsnapy/tests/test1.yml
+        user: "{{ credentials.username }}"
+      name: "Collect Pre Snapshot"
+
+    -
+      junos_config:
+        provider: "{{credentials}}"
+        src: "files/{{inventory_hostname}}_users.conf"
+        src_format: text
+        comment: 'adding some users'
+        host: "{{inventory_hostname}}"
+      name: "install users"
+
+
+    - name: Collect Post Snapshot
+      junos_jsnapy:
+        host: "{{ inventory_hostname }}"
+        user: "{{ credentials.username }}"
+        passwd: "{{ credentials.password }}"
+        action: "snap_post"
+        test_files: ../jsnapy/tests/test1.yml
+
+    - name: Compare snapshots
+      junos_jsnapy:
+        host: "{{ inventory_hostname }}"
+        user: "{{ credentials.username }}"
+        passwd: "{{ credentials.password }}"
+        action: "check"
+        test_files: ../jsnapy/tests/test1.yml
+      register: test_check
+
+    - name: Debug jsnapy
+      debug: 
+        msg: "{{ test_check }}"
+
+    # - name: Send Slack notification when jsnapy fails
+    #   local_action:
+    #     module: slack
+    #     username: "Ansible on {{ inventory_hostname }}"
+    #     channel: general       
+    #     token: T4KKHGD24/B4UHT0S04/mG45cTkAUcwKgNabZHEhXp6Y
+    #     icon_url: "https://www.ansible.com/hs-fs/hub/330046/file-448313641-png/favicon.png"
+    #     msg: "{{test_check.router}} final outcome is: {{test_check.final_result}}"
+    #     validate_certs: yes
+      # when: test_check.passPercentage != 100
+
+    - name: Check Users
+      junos_jsnapy:
+        host: "{{ inventory_hostname }}"
+        user: "{{ credentials.username }}"
+        passwd: "{{ credentials.password }}"
+        action: "snapcheck"
+        test_files: ../jsnapy/tests/test2.yml
+      register: test_check_2
+
+    - name: Debug jsnapy
+      debug: 
+        msg: "{{ test_check_2 }}"      
+
+
+  vars_files: 
+    - vars/users.yml 

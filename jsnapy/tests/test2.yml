@@ -1,0 +1,12 @@
+user_check: 
+  - command: show configuration system login | display xml 
+  - iterate:
+      xpath: //configuration/system/login/user[normalize-space(name) = "paul"]
+      id: './full-name'
+      tests:
+        - is-equal: full-name, Paul Plav
+          err: "Test Failed!! full-name is <{{post['./full-name']}}>, should be 'Paul Plav'"
+          info: "Test succeeded!! full-name is correct: <{{post['./full-name']}}>."
+        - is-equal: class, super-user
+          err: "Test Failed!! user is <{{post['./full-name']}}>, should be 'super-user'"
+          info: "Test succeeded!! user is correct: <{{post['./full-name']}}> and super-user"
